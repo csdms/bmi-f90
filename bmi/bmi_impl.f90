@@ -176,13 +176,13 @@
             start = 0.
           end subroutine BMI_Get_start_time
 
-          subroutine BMI_Get_end_time (self, end)
+          subroutine BMI_Get_end_time (self, terminus)
             implicit none
             type (BMI_Model), intent (inout) :: self
-            real, intent (out) :: end
+            real, intent (out) :: terminus
             ! end declaration BMI_Get_end_time
 
-            end = self%t_end
+            terminus = self%t_end
           end subroutine BMI_Get_end_time
 
           subroutine BMI_Get_current_time (self, time)
