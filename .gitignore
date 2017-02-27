@@ -26,3 +26,9 @@
 *.exe
 *.out
 *.app
+
+# pkg-config files
+*.pc
+
+# Emacs backups
+*~
