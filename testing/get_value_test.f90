@@ -29,15 +29,15 @@
       call BMI_Get_current_time (m, time)
       write (*,"(A30, f8.2)") "Current time: ", time
 
-      call BMI_Get_var_rank (m, "surface_elevation", rank)
+      call BMI_Get_var_rank (m, "plate_surface__temperature", rank)
       write (*,"(A30, f8.2)") "Var rank: ", time
 
       allocate (shape (rank))
-      call BMI_Get_grid_shape (m, "surface_elevation", shape)
+      call BMI_Get_grid_shape (m, "plate_surface__temperature", shape)
       write (*,"(A30, i3, A, i3)") "Grid shape is: ", &
         shape(1), " x ", shape(2)
 
-      call BMI_Get_double (m, "surface_elevation", z)
+      call BMI_Get_double (m, "plate_surface__temperature", z)
 
       write (*,"(A)") "Running..."
       do j = 1, 10

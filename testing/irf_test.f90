@@ -28,21 +28,21 @@
       call BMI_Get_current_time (m, time)
       write (*,"(A30, f8.2)") "Current time: ", time
 
-      call BMI_Get_var_rank (m, "surface_elevation", rank)
+      call BMI_Get_var_rank (m, "plate_surface__temperature", rank)
       write (*,"(A30, f8.2)") "Var rank: ", time
 
       allocate (shape (rank))
-      call BMI_Get_grid_shape (m, "surface_elevation", shape)
+      call BMI_Get_grid_shape (m, "plate_surface__temperature", shape)
       write (*,"(A30, i3, A, i3)") "Grid shape is: ", &
         shape(1), " x ", shape(2)
 
       allocate (spacing (rank))
-      call BMI_Get_grid_spacing (m, "surface_elevation", spacing)
+      call BMI_Get_grid_spacing (m, "plate_surface__temperature", spacing)
       write (*,"(A30, f8.3, A, f8.3)") "Grid spacing is: ", &
         spacing(1), " x ", spacing(2)
 
       allocate (origin (rank))
-      call BMI_Get_grid_origin (m, "surface_elevation", origin)
+      call BMI_Get_grid_origin (m, "plate_surface__temperature", origin)
       write (*,"(A30, f8.3, A, f8.3)") "Grid origin is: ", &
         origin(1), " x ", origin(2)
 
