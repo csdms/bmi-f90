@@ -14,7 +14,8 @@ set (BUILD_SHARED_LIBS ON)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
 
 set (bmi_lib_SRCS
-  bmi.f90)
+  bmi.f90
+  bmi_params.f90)
 
 add_library (bmif ${bmi_lib_SRCS} )
 

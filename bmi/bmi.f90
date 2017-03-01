@@ -1,24 +1,8 @@
 module bmif
+
+  use bmi_params
   use, intrinsic :: iso_c_binding, only: c_ptr, c_loc, c_f_pointer
   implicit none
-
-  integer, parameter :: BMI_VAR_TYPE_UNKNOWN = 0
-  integer, parameter :: BMI_VAR_TYPE_CHAR = 1
-  integer, parameter :: BMI_VAR_TYPE_UNSIGNED_CHAR = 2
-  integer, parameter :: BMI_VAR_TYPE_INT = 3
-  integer, parameter :: BMI_VAR_TYPE_LONG = 4
-  integer, parameter :: BMI_VAR_TYPE_UNSIGNED_INT = 5
-  integer, parameter :: BMI_VAR_TYPE_UNSIGNED_LONG = 6
-  integer, parameter :: BMI_VAR_TYPE_FLOAT = 7
-  integer, parameter :: BMI_VAR_TYPE_DOUBLE = 8
-  integer, parameter :: BMI_VAR_TYPE_NUMBER = 9
-
-  integer, parameter :: BMI_GRID_TYPE_UNKNOWN = 0
-  integer, parameter :: BMI_GRID_TYPE_UNIFORM = 1
-  integer, parameter :: BMI_GRID_TYPE_RECTILINEAR = 2
-  integer, parameter :: BMI_GRID_TYPE_STRUCTURED = 3
-  integer, parameter :: BMI_GRID_TYPE_UNSTRUCTURED = 4
-  integer, parameter :: BMI_GRID_TYPE_NUMBER = 5
 
   type :: BMI_Model
      private
@@ -54,6 +38,7 @@ module bmif
   ! end exchange item list
 
 contains
+
   subroutine BMI_Initialize (self, config_file)
     type (BMI_Model), intent (out) :: self
     character (len=*), intent (in) :: config_file
@@ -98,7 +83,6 @@ contains
     end do
 
   end subroutine set_bc
-
 
   subroutine BMI_Finalize (self)
     implicit none
