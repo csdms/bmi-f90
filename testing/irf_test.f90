@@ -2,7 +2,7 @@
       use bmif
       implicit none
 
-      type (BMI_Model) :: m
+      type (heat_model) :: m
       integer :: rank
       integer, allocatable, dimension (:) :: shape
       real, allocatable, dimension (:) :: spacing
@@ -10,7 +10,7 @@
       integer :: i
       real :: time
       character (len=22), pointer :: names(:)
-      character (len=component_name_length), pointer :: name
+      character (len=model_name_length), pointer :: name
 
       write (*,"(A)",advance="no") "Initializing..."
       call BMI_Initialize (m, "")
