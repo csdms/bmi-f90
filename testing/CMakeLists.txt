@@ -11,6 +11,7 @@ add_test (BMI_SET_VALUES set_value_test)
 set (BUILD_SHARED_LIBS ON)
 
 include_directories( ${CMAKE_BINARY_DIR}/bmi )
+include_directories( ${CMAKE_BINARY_DIR}/heat )
 #link_directories( ${CMAKE_BINARY_DIR}/bmi )
 
 ########### BMI main program ###############
