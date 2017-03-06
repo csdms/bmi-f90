@@ -31,4 +31,7 @@ module bmi_params
     integer, parameter :: BMI_FLOAT = 4
     integer, parameter :: BMI_DOUBLE = 8
 
+    integer, parameter :: BMI_FAILURE = 0
+    integer, parameter :: BMI_SUCCESS = 1
+
 end module bmi_params
