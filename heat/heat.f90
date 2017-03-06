@@ -19,6 +19,8 @@ module heat
      real, pointer :: temperature_tmp(:,:)
   end type heat_model
 
+  private :: initialize, set_boundary_conditions
+
 contains
 
   ! Initializes the model with values read from a file.
