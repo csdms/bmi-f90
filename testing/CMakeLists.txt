@@ -24,9 +24,9 @@ add_executable(irf_test ${bmi_irf_SRCS})
 add_executable(get_value_test ${bmi_get_value_SRCS})
 add_executable(set_value_test ${bmi_set_value_SRCS})
 
-target_link_libraries(irf_test bmif90)
-target_link_libraries(get_value_test bmif90)
-target_link_libraries(set_value_test bmif90)
+target_link_libraries(irf_test bmif90 bmi_heatf90)
+target_link_libraries(get_value_test bmif90 bmi_heatf90)
+target_link_libraries(set_value_test bmif90 bmi_heatf90)
 
 #install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/irf_test
 #        DESTINATION bin COMPONENT bmi)
