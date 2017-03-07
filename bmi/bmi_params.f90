@@ -18,9 +18,9 @@ module bmi_params
     integer, parameter :: BMI_GRID_TYPE_UNSTRUCTURED = 4
     integer, parameter :: BMI_GRID_TYPE_NUMBER = 5
 
-    integer, parameter :: BMI_MAXVARNAMESTR = 22
-    integer, parameter :: BMI_MAXCOMPNAMESTR = 22
-    integer, parameter :: BMI_MAXUNITSSTR = 22
+    integer, parameter :: BMI_MAXVARNAMESTR = 31
+    integer, parameter :: BMI_MAXCOMPNAMESTR = 31
+    integer, parameter :: BMI_MAXUNITSSTR = 31
 
     integer, parameter :: BMI_CHAR = 1
     integer, parameter :: BMI_UNSIGNED_CHAR = 1
