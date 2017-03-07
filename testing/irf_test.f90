@@ -1,70 +1,71 @@
-      program test
-      use bmif
-      implicit none
+program irf_test
 
-      type (heat_model) :: m
-      integer :: rank
-      integer, allocatable, dimension (:) :: shape
-      real, allocatable, dimension (:) :: spacing
-      real, allocatable, dimension (:) :: origin
-      integer :: i
-      real :: time
-      character (len=22), pointer :: names(:)
-      character (len=model_name_length), pointer :: name
+  use bmi_heat
+  implicit none
 
-      write (*,"(A)",advance="no") "Initializing..."
-      call BMI_Initialize (m, "")
-      write (*,*) "Done."
+  type (heat_model) :: m
+  integer :: s
+  real :: time, time0, time1
+  integer :: i
+  character (len=BMI_MAXUNITSSTR) :: time_units
+  character (len=BMI_MAXVARNAMESTR), pointer :: names(:)
+  character (len=BMI_MAXCOMPNAMESTR), pointer :: name
 
-      write (*,"(A)") "Component info:"
+  write (*,"(a)",advance="no") "Initializing..."
+  s = initialize(m, "")
+  write (*,*) "Done."
 
-      call BMI_Get_component_name (m, name)
-      write (*,"(a30, a30)") "Component name: ", name
+  write (*,"(a)") "Component info"
 
-      call BMI_Get_start_time (m, time)
-      write (*,"(A30, f8.2)") "Start time: ", time
-      call BMI_Get_end_time (m, time)
-      write (*,"(A30, f8.2)") "End time: ", time
-      call BMI_Get_current_time (m, time)
-      write (*,"(A30, f8.2)") "Current time: ", time
+  s = get_component_name(m, name)
+  write (*,"(a30, a30)") "Component name: ", name
 
-      call BMI_Get_var_rank (m, "plate_surface__temperature", rank)
-      write (*,"(A30, f8.2)") "Var rank: ", time
+  s = get_start_time(m, time0)
+  write (*,"(a30, f8.2)") "Start time: ", time0
+  s = get_end_time(m, time1)
+  write (*,"(a30, f8.2)") "End time: ", time1
+  s = get_current_time(m, time)
+  write (*,"(a30, f8.2)") "Current time: ", time
+  s = get_time_step(m, time)
+  write (*,"(a30, f8.2)") "Time step: ", time
+  s = get_time_units(m, time_units)
+  write (*,"(a30, a)") "Time units: ", time_units
 
-      allocate (shape (rank))
-      call BMI_Get_grid_shape (m, "plate_surface__temperature", shape)
-      write (*,"(A30, i3, A, i3)") "Grid shape is: ", &
-        shape(1), " x ", shape(2)
+  s = get_input_var_names(m, names)
+  write (*,"(a30, a)") "Input variables: ", names
+  s = get_output_var_names(m, names)
+  write (*,"(a30, a)") "Output variables: ", names
 
-      allocate (spacing (rank))
-      call BMI_Get_grid_spacing (m, "plate_surface__temperature", spacing)
-      write (*,"(A30, f8.3, A, f8.3)") "Grid spacing is: ", &
-        spacing(1), " x ", spacing(2)
+  write (*,"(a)") "Update one time step"
+  s = get_current_time(m, time)
+  write (*,"(a30, f8.2)") "Start time: ", time
+  s = update(m)
+  s = get_current_time(m, time)
+  write (*,"(a30, f8.2)") "Stop time: ", time
 
-      allocate (origin (rank))
-      call BMI_Get_grid_origin (m, "plate_surface__temperature", origin)
-      write (*,"(A30, f8.3, A, f8.3)") "Grid origin is: ", &
-        origin(1), " x ", origin(2)
+  write (*,"(a)") "Running..."
+  do i = 1, 10
+     write (*,"(a30, i3)") "Time step:", i
+     s = update(m)
+  end do
 
-      write (*,"(A)") "Running..."
-      do i = 1, 10
-        write (*,"(A30, i3)") "Time step:", i
-        call BMI_Update (m)
-      end do
-      write (*,"(A)") "Done."
+  write (*,"(a)") "Update a fraction of a time step"
+  s = get_current_time(m, time0)
+  write (*,"(a30, f8.2)") "Start time: ", time0
+  s = update_frac(m, 0.5)
+  s = get_current_time(m, time1)
+  write (*,"(a30, f8.2)") "Stop time: ", time1
 
-      time = 1000.5
-      write (*,"(a, f8.3, a, X)", advance="no") &
-        "Running until ", time, "..."
-      call BMI_Update_until (m, time)
-      write (*,"(A)") "Done."
+  s = get_end_time(m, time)
+  write (*,"(a, f8.2)") "Running until... ", time
+  s = get_current_time(m, time0)
+  write (*,"(a30, f8.2)") "Start time: ", time0
+  s = update_until(m, time)
+  s = get_current_time(m, time1)
+  write (*,"(a30, f8.2)") "Stop time: ", time1
 
-      call BMI_Get_current_time (m, time)
-      write (*,"(A30, f8.3)") "Time:", time
+  write (*,"(a)", advance="no") "Finalizing..."
+  s = finalize(m)
+  write (*,*) "Done"
 
-      write (*,"(A)", advance="no") "Finalizing..."
-      call BMI_Finalize (m)
-      write (*,*) "Done"
-
-      end program test
-
+end program irf_test
