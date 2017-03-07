@@ -44,4 +44,105 @@ contains
     status = BMI_SUCCESS
   end function get_component_name
 
+  ! Start time of the model.
+  function get_start_time(self, time) result(status)
+    type (heat_model), intent (inout) :: self
+    real, intent (out) :: time
+    integer :: status
+
+    time = 0.0
+
+    status = BMI_SUCCESS
+  end function get_start_time
+
+  ! End time of the model.
+  function get_end_time(self, time) result(status)
+    type (heat_model), intent (inout) :: self
+    real, intent (out) :: time
+    integer :: status
+
+    time = self%t_end
+
+    status = BMI_SUCCESS
+  end function get_end_time
+
+  ! Current time of the model.
+  function get_current_time(self, time) result(status)
+    type (heat_model), intent (inout) :: self
+    real, intent (out) :: time
+    integer :: status
+
+    time = self%t
+
+    status = BMI_SUCCESS
+  end function get_current_time
+
+  ! Time step of the model.
+  function get_time_step(self, time_step) result(status)
+    type (heat_model), intent (inout) :: self
+    real, intent (out) :: time_step
+    integer :: status
+
+    time_step = self%dt
+
+    status = BMI_SUCCESS
+  end function get_time_step
+
+  ! Time unit of the model.
+  function get_time_units(self, time_units) result(status)
+    type (heat_model), intent (inout) :: self
+    character (len=*), intent (out) :: time_units
+    integer :: status
+
+    time_units = "-"
+
+    status = BMI_SUCCESS
+  end function get_time_units
+
+  ! Advance the model one time step.
+  function update(self) result(status)
+    type (heat_model), intent (inout) :: self
+    integer :: status
+
+    call advance_in_time(self)
+
+    status = BMI_SUCCESS
+  end function update
+
+  ! Advance the model by a fraction of a time step.
+  function update_frac(self, time_frac) result(status)
+    type (heat_model), intent (inout) :: self
+    real, intent (in) :: time_frac
+    real :: time_step
+    integer :: status
+
+    if (time_frac > 0.0) then
+       time_step = self%dt
+       self%dt = time_step*time_frac
+       call advance_in_time(self)
+       self%dt = time_step
+    end if
+
+    status = BMI_SUCCESS
+  end function update_frac
+
+  ! Advance the model until the given time.
+  function update_until(self, time) result(status)
+    type (heat_model), intent (inout) :: self
+    real, intent (in) :: time
+    integer :: status, n_steps, i, s
+    real :: n_steps_real
+
+    if (time > self%t) then
+       n_steps_real = (time - self%t) / self%dt
+       n_steps = floor(n_steps_real)
+       do i = 1, n_steps
+          s = update(self)
+       end do
+       s = update_frac(self, n_steps_real - real(n_steps))
+    end if
+
+    status = BMI_SUCCESS
+  end function update_until
+
 end module bmi_heat
