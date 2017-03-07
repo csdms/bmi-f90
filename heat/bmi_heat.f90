@@ -207,14 +207,23 @@ contains
   end function get_var_itemsize
 
   ! Get size, in bytes, of the given variable.
-  function get_var_nbytes(self, var_name, size) result(status)
+  function get_var_nbytes(self, var_name, nsize) result(status)
     type (heat_model), intent (in) :: self
     character (len=*), pointer, intent (in) :: var_name
-    integer, intent (out) :: size
-    integer :: status
+    integer, intent (out) :: nsize
+    integer :: s1, s2, s3, grid_id, grid_size, item_size, status
 
-    ! Todo
+    s1 = get_var_grid(self, var_name, grid_id)
+    s2 = get_grid_size(self, grid_id, grid_size)
+    s3 = get_var_itemsize(self, var_name, item_size)
 
+    if ((s1 == BMI_SUCCESS).and.(s2 == BMI_SUCCESS).and.(s3 == BMI_SUCCESS)) then
+       nsize = item_size * grid_size
+       status = BMI_SUCCESS
+    else
+       nsize = -1
+       status = BMI_FAILURE
+    end if
   end function get_var_nbytes
 
   ! Get the data type of the given variable as a string.
@@ -248,5 +257,95 @@ contains
        status = BMI_FAILURE
     end if
   end function get_var_units
+
+  ! Get the grid type as a string.
+  function get_grid_type(self, grid_id, grid_type) result(status)
+    type (heat_model), intent (in) :: self
+    integer, intent (in) :: grid_id
+    character (len=BMI_MAXVARNAMESTR), intent (out) :: grid_type
+    integer :: status
+
+    if (grid_id == 0) then
+       grid_type = "uniform_rectilinear"
+       status = BMI_SUCCESS
+    else
+       grid_type = "-"
+       status = BMI_FAILURE
+    end if
+  end function get_grid_type
+
+  ! Get coordinates for the origin of the computational grid.
+  function get_grid_origin(self, grid_id, origin) result(status)
+    type (heat_model), intent (in) :: self
+    integer, intent (in) :: grid_id
+    real, dimension(:), intent (out) :: origin
+    integer :: status
+
+    if (grid_id == 0) then
+       origin = (/0.0, 0.0/)
+    end if
+
+    status = BMI_SUCCESS
+  end function get_grid_origin
+
+  ! Get number of dimensions of the computational grid.
+  function get_grid_rank(self, grid_id, rank) result(status)
+    type (heat_model), intent (in) :: self
+    integer, intent (in) :: grid_id
+    integer, intent (out) :: rank
+    integer :: status
+
+    if (grid_id == 0) then
+       rank = 2
+       status = BMI_SUCCESS
+    else
+       rank = -1
+       status = BMI_FAILURE
+    end if
+  end function get_grid_rank
+
+  ! Get the dimensions of the computational grid.
+  function get_grid_shape(self, grid_id, shape) result(status)
+    type (heat_model), intent (in) :: self
+    integer, intent (in) :: grid_id
+    integer, dimension(:), intent (out) :: shape
+    integer :: status
+
+    if (grid_id == 0) then
+       shape = (/self%n_y, self%n_x/)
+    end if
+
+    status = BMI_SUCCESS
+  end function get_grid_shape
+
+  ! Get the total number of elements in the computational grid.
+  function get_grid_size(self, grid_id, nsize) result(status)
+    type (heat_model), intent (in) :: self
+    integer, intent (in) :: grid_id
+    integer, intent (out) :: nsize
+    integer :: status
+
+    if (grid_id == 0) then
+       nsize = self%n_y * self%n_x
+       status = BMI_SUCCESS
+    else
+       nsize = -1
+       status = BMI_FAILURE
+    end if
+  end function get_grid_size
+
+  ! Get distance between nodes of the computational grid.
+  function get_grid_spacing(self, grid_id, spacing) result(status)
+    type (heat_model), intent (in) :: self
+    integer, intent (in) :: grid_id
+    real, dimension(:), intent (out) :: spacing
+    integer :: status
+
+    if (grid_id == 0) then
+       spacing = (/self%dy, self%dx/)
+    end if
+
+    status = BMI_SUCCESS
+  end function get_grid_spacing
 
 end module bmi_heat
