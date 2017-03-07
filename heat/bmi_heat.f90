@@ -7,6 +7,16 @@ module bmi_heat
   character (len=BMI_MAXCOMPNAMESTR), target :: &
        component_name = "The 2D Heat Equation"
 
+  ! Exchange items
+  integer, parameter :: input_item_count = 1
+  integer, parameter :: output_item_count = 1
+  character (len=BMI_MAXVARNAMESTR), target, &
+       dimension (input_item_count) :: &
+       input_items = (/'plate_surface__temperature'/)
+  character (len=BMI_MAXVARNAMESTR), target, &
+       dimension (output_item_count) :: &
+       output_items = (/'plate_surface__temperature'/)
+
 contains
 
   ! Perform startup tasks for the model.
@@ -43,6 +53,25 @@ contains
     name => component_name
     status = BMI_SUCCESS
   end function get_component_name
+
+  ! List a model's input variables.
+  function get_input_var_names(self, names) result(status)
+    type (heat_model), intent (in) :: self
+    character (*), pointer, intent (out) :: names(:)
+    integer :: status
+
+    names => input_items
+    status = BMI_SUCCESS
+  end function get_input_var_names
+
+  ! List a model's output variables.
+  function get_output_var_names(self, names) result(status)
+    type (heat_model), intent (in) :: self
+    character (*), pointer, intent (out) :: names(:)
+    integer :: status
+
+    names => output_items
+  end function get_output_var_names
 
   ! Start time of the model.
   function get_start_time(self, time) result(status)
