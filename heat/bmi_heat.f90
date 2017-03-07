@@ -174,4 +174,79 @@ contains
     status = BMI_SUCCESS
   end function update_until
 
+  ! Get the grid identifier for the given variable.
+  function get_var_grid(self, var_name, grid_id) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), pointer, intent (in) :: var_name
+    integer, intent (out) :: grid_id
+    integer :: status
+
+    if (var_name == output_items(1)) then
+       grid_id = 0
+       status = BMI_SUCCESS
+    else
+       grid_id = -1
+       status = BMI_FAILURE
+    end if
+  end function get_var_grid
+
+  ! Get memory use per array element, in bytes.
+  function get_var_itemsize(self, var_name, size) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), pointer, intent (in) :: var_name
+    integer, intent (out) :: size
+    integer :: status
+
+    if (var_name == output_items(1)) then
+       size = BMI_DOUBLE
+       status = BMI_SUCCESS
+    else
+       size = 0
+       status = BMI_FAILURE
+    end if
+  end function get_var_itemsize
+
+  ! Get size, in bytes, of the given variable.
+  function get_var_nbytes(self, var_name, size) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), pointer, intent (in) :: var_name
+    integer, intent (out) :: size
+    integer :: status
+
+    ! Todo
+
+  end function get_var_nbytes
+
+  ! Get the data type of the given variable as a string.
+  function get_var_type(self, var_name, type_name) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), pointer, intent (in) :: var_name
+    character (len=BMI_MAXVARNAMESTR), intent (out) :: type_name
+    integer :: status
+
+    if (var_name == output_items(1)) then
+       type_name = "double"
+       status = BMI_SUCCESS
+    else
+       type_name = "-"
+       status = BMI_FAILURE
+    end if
+  end function get_var_type
+
+  ! Get the units of the given variable.
+  function get_var_units(self, var_name, units) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), pointer, intent (in) :: var_name
+    character (len=BMI_MAXVARNAMESTR), intent (out) :: units
+    integer :: status
+
+    if (var_name == output_items(1)) then
+       units = "K"
+       status = BMI_SUCCESS
+    else
+       units = "-"
+       status = BMI_FAILURE
+    end if
+  end function get_var_units
+
 end module bmi_heat
