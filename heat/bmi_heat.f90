@@ -17,7 +17,7 @@ module bmi_heat
        dimension (output_item_count) :: &
        output_items = (/'plate_surface__temperature'/)
 
-  private allocate_flattened_array
+  private allocate_flattened_array, convert_indices
 
 contains
 
