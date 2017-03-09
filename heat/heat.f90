@@ -40,7 +40,7 @@ contains
   subroutine initialize_from_defaults(model)
     type (heat_model), intent (out) :: model
 
-    model%alpha = 1.0
+    model%alpha = 0.75
     model%t_end = 20.
     model%n_x = 10
     model%n_y = 20
@@ -100,24 +100,22 @@ contains
   subroutine solve_2d(model)
     type (heat_model), intent (inout) :: model
 
-    real, parameter :: rho = 0.
     real :: dx2
     real :: dy2
-    real :: dx2_dy2_rho
     real :: coef
     integer :: i, j
 
     dx2 = model%dx**2
     dy2 = model%dy**2
-    dx2_dy2_rho = dx2 * dy2 * rho
     coef = model%alpha * model%dt / (2. * (dx2 + dy2))
 
     do i = 2, model%n_y-1
        do j = 2, model%n_x-1
-          model%temperature_tmp(i,j) = coef * ( &
+          model%temperature_tmp(i,j) = &
+               model%temperature(i,j) + coef * ( &
                dx2*(model%temperature(i-1,j) + model%temperature(i+1,j)) + &
                dy2*(model%temperature(i,j-1) + model%temperature(i,j+1)) - &
-               dx2_dy2_rho )
+               2.*(dx2 + dy2)*model%temperature(i,j) )
        end do
     end do
   end subroutine solve_2d
