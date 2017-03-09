@@ -2,6 +2,7 @@
 program conflicting_instances_test
 
   use bmi_heat
+  use testing_helpers
   implicit none
 
   type (heat_model) :: m1
@@ -66,17 +67,3 @@ program conflicting_instances_test
   write (*,*) "Done"
 
 end program conflicting_instances_test
-
-! A helper to print the retrived array to the console.
-subroutine print_array(array, dims)
-  integer :: dims(2)
-  real, dimension(product(dims)) :: array
-  integer :: i, j
-
-  do j = 1, dims(1)
-     do i = 1, dims(2)
-        write (*,"(f6.1)", advance="no") array(j + dims(1)*(i-1))
-     end do
-     write (*,*)
-  end do
-end subroutine print_array
