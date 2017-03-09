@@ -17,6 +17,8 @@ module bmi_heat
        dimension (output_item_count) :: &
        output_items = (/'plate_surface__temperature'/)
 
+  private allocate_flattened_array
+
 contains
 
   ! Perform startup tasks for the model.
@@ -347,5 +349,36 @@ contains
 
     status = BMI_SUCCESS
   end function get_grid_spacing
+
+  ! Get a copy of values (flattened!) of the given variable.
+  function get_value(self, var_name, dest) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), intent (in) :: var_name
+    real, pointer, intent (inout) :: dest(:)
+    integer :: n_elements, status
+
+    select case (var_name)
+    case ('plate_surface__temperature')
+       n_elements = self%n_y * self%n_x
+       call allocate_flattened_array(dest, n_elements)
+       dest = reshape(self%temperature, (/n_elements/))
+       status = BMI_SUCCESS
+    case default
+       n_elements = 1
+       call allocate_flattened_array(dest, n_elements)
+       dest = -1.0
+       status = BMI_FAILURE
+    end select
+  end function get_value
+
+  ! A helper routine to allocate a flattened array.
+  subroutine allocate_flattened_array(array, n)
+    real, pointer, intent (inout) :: array(:)
+    integer, intent (in) :: n
+
+    if (.not.associated(array)) then
+       allocate(array(n))
+    end if
+  end subroutine allocate_flattened_array
 
 end module bmi_heat

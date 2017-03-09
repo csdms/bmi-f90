@@ -1,67 +1,57 @@
-      program test
-      use bmif
-      implicit none
+! Test the get_value, get_value_ref, and get_value_at_indices functions.
+program get_value_test
 
-      type (heat_model) :: m
-      integer :: rank
-      integer, allocatable, dimension (:) :: shape
-      real, allocatable, dimension (:) :: spacing
-      real, allocatable, dimension (:) :: origin
-      integer :: i, j
-      real :: time
-      character (len=22), pointer :: names(:)
-      character (len=model_name_length), pointer :: name
-      real, pointer, dimension(:) :: z
+  use bmi_heat
+  implicit none
 
-      write (*,"(A)",advance="no") "Initializing..."
-      call BMI_Initialize (m, "")
-      write (*,*) "Done."
+  type (heat_model) :: m
+  integer :: s, i, j, grid_id
+  character (len=BMI_MAXVARNAMESTR), pointer :: names(:)
+  integer :: dims(2)
+  real, pointer :: z(:)
+  character(len=30) :: rowfmt
 
-      write (*,"(A)") "Component info:"
+  write (*,"(a)",advance="no") "Initializing..."
+  s = initialize(m, "")
+  write (*,*) "Done."
 
-      call BMI_Get_component_name (m, name)
-      write (*,"(a30, a30)") "Component name: ", name
+  s = get_output_var_names(m, names)
+  write (*,"(a, a)") "Output variables: ", names
 
-      call BMI_Get_start_time (m, time)
-      write (*,"(A30, f8.2)") "Start time: ", time
-      call BMI_Get_end_time (m, time)
-      write (*,"(A30, f8.2)") "End time: ", time
-      call BMI_Get_current_time (m, time)
-      write (*,"(A30, f8.2)") "Current time: ", time
+  s = get_var_grid(m, names(1), grid_id)
+  s = get_grid_shape(m, grid_id, dims)
+  write(rowfmt,'(a,i4,a)') '(', dims(2), '(1x,f6.1))'
 
-      call BMI_Get_var_rank (m, "plate_surface__temperature", rank)
-      write (*,"(A30, f8.2)") "Var rank: ", time
+  write (*, "(a)") "Initial values:"
+  s = get_value(m, "plate_surface__temperature", z)
+  call print_array(z, dims)
+  write (*, "(a, i5)") "Shape of returned values:", shape(z)
 
-      allocate (shape (rank))
-      call BMI_Get_grid_shape (m, "plate_surface__temperature", shape)
-      write (*,"(A30, i3, A, i3)") "Grid shape is: ", &
-        shape(1), " x ", shape(2)
+  write (*,"(a)") "Running..."
+  do j = 1, 4
+     s = update(m)
+     s = get_value(m, "plate_surface__temperature", z)
+     write (*,*) "Values at time:", j
+     call print_array(z, dims)
+  end do
+  write (*,"(a)") "Done."
 
-      call BMI_Get_double (m, "plate_surface__temperature", z)
+  write (*,"(a)", advance="no") "Finalizing..."
+  s = finalize(m)
+  write (*,*) "Done"
 
-      write (*,"(A)") "Running..."
-      do j = 1, 10
-        call BMI_Update (m)
+end program get_value_test
 
-        write (*,*) "Values at time ", j
-        write (*,*) "==================="
-        do i = 1, shape(2)
-          write (*,*) z(i*shape(1)-shape(1)+1:i*shape(1))
-        end do
+! A helper to print the retrived array to the console.
+subroutine print_array(array, dims)
+  integer :: dims(2)
+  real, dimension(product(dims)) :: array
+  integer :: i, j
 
-      end do
-      write (*,"(A)") "Done."
-
-      call BMI_Update_until (m, 1000.5)
-      write (*,*) "Values at time ", 1000.5
-      write (*,*) "==================="
-      do i = 1, shape(2)
-          write (*,*) z(i*shape(1)-shape(1)+1:i*shape(1))
-      end do
-
-      write (*,"(A)", advance="no") "Finalizing..."
-      call BMI_Finalize (m)
-      write (*,*) "Done"
-
-      end program test
-
+  do j = 1, dims(1)
+     do i = 1, dims(2)
+        write (*,"(f6.1)", advance="no") array(j + dims(1)*(i-1))
+     end do
+     write (*,*)
+  end do
+end subroutine print_array
