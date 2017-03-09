@@ -406,8 +406,44 @@ contains
        dest = -1.0
        status = BMI_FAILURE
     end select
-
   end function get_value_at_indices
+
+  ! Set a new value for a model variable.
+  function set_value(self, var_name, src) result(status)
+    type (heat_model), intent (inout) :: self
+    character (len=*), intent (in) :: var_name
+    real, intent (in) :: src(:)
+    integer :: status
+
+    select case (var_name)
+    case ('plate_surface__temperature')
+       self%temperature = reshape(src, (/self%n_y, self%n_x/))
+       status = BMI_SUCCESS
+    case default
+       status = BMI_FAILURE
+    end select
+  end function set_value
+
+  ! Set new values for a model variable at particular locations.
+  function set_value_at_indices(self, var_name, indices, src) result(status)
+    type (heat_model), intent (inout) :: self
+    character (len=*), intent (in) :: var_name
+    real, intent (in) :: src(:)
+    integer, intent (in) :: indices(:)
+    integer :: i, j, k, status
+
+    select case (var_name)
+    case ('plate_surface__temperature')
+       do k = 1, size(indices)
+          j = mod((indices(k)-1), int(self%n_y)) + 1
+          i = (indices(k)-1)/int(self%n_y) + 1
+          self%temperature(j,i) = src(k)
+       end do
+       status = BMI_SUCCESS
+    case default
+       status = BMI_FAILURE
+    end select
+  end function set_value_at_indices
 
   ! A helper routine to allocate a flattened array.
   subroutine allocate_flattened_array(array, n)
