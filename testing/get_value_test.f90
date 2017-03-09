@@ -7,8 +7,8 @@ program get_value_test
   type (heat_model) :: m
   integer :: s, i, j, grid_id
   character (len=BMI_MAXVARNAMESTR), pointer :: names(:)
-  integer :: dims(2)
-  real, pointer :: z(:)
+  integer :: dims(2), locations(3)
+  real, pointer :: z(:), y(:)
   character(len=30) :: rowfmt
 
   write (*,"(a)",advance="no") "Initializing..."
@@ -35,6 +35,12 @@ program get_value_test
      call print_array(z, dims)
   end do
   write (*,"(a)") "Done."
+
+  write (*, "(a)") "Values at three locations:"
+  locations = (/21, 41, 62/)
+  write (*,*) "Locations: ", locations
+  s = get_value_at_indices(m, "plate_surface__temperature", y, locations)
+  write (*,*) "Values: ", y
 
   write (*,"(a)", advance="no") "Finalizing..."
   s = finalize(m)

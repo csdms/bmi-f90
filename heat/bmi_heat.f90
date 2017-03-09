@@ -371,6 +371,44 @@ contains
     end select
   end function get_value
 
+  ! Get a reference to the values (flattened!) of the given variable.
+  function get_value_ref(self, var_name, dest) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), pointer, intent (in) :: var_name
+    real, pointer, intent (inout) :: dest(:)
+    integer :: status
+
+    ! Todo. I don't think I can do this in F9X. I need the
+    ! iso_c_bindings module from F03.
+
+    status = BMI_FAILURE
+  end function get_value_ref
+
+  ! Get values at particular (one-dimensional) indices.
+  function get_value_at_indices(self, var_name, dest, indices) result(status)
+    type (heat_model), intent (in) :: self
+    character (len=*), intent (in) :: var_name
+    real, pointer, intent (inout) :: dest(:)
+    integer, intent (in) :: indices(:)
+    integer :: i, j, k, status
+
+    select case (var_name)
+    case ('plate_surface__temperature')
+       call allocate_flattened_array(dest, size(indices))
+       do k = 1, size(indices)
+          j = mod((indices(k)-1), int(self%n_y)) + 1
+          i = (indices(k)-1)/int(self%n_y) + 1
+          dest(k) = self%temperature(j,i)
+       end do
+       status = BMI_SUCCESS
+    case default
+       call allocate_flattened_array(dest, 1)
+       dest = -1.0
+       status = BMI_FAILURE
+    end select
+
+  end function get_value_at_indices
+
   ! A helper routine to allocate a flattened array.
   subroutine allocate_flattened_array(array, n)
     real, pointer, intent (inout) :: array(:)
