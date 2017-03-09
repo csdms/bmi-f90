@@ -9,6 +9,8 @@ module heat
      real :: t
      real :: t_end
 
+     real :: alpha
+
      integer :: n_x
      integer :: n_y
 
@@ -29,7 +31,7 @@ contains
     type (heat_model), intent (out) :: model
 
     open(15, file=config_file)
-    read(15, *) model%dt, model%t_end, model%n_x, model%n_y
+    read(15, *) model%alpha, model%t_end, model%n_x, model%n_y
     close(15)
     call initialize(model)
   end subroutine initialize_from_file
@@ -38,7 +40,7 @@ contains
   subroutine initialize_from_defaults(model)
     type (heat_model), intent (out) :: model
 
-    model%dt = 1.
+    model%alpha = 1.0
     model%t_end = 20.
     model%n_x = 10
     model%n_y = 20
@@ -50,6 +52,7 @@ contains
     type (heat_model), intent (inout) :: model
 
     model%t = 0.
+    model%dt = 1.
     model%dx = 1.
     model%dy = 1.
 
@@ -107,7 +110,7 @@ contains
     dx2 = model%dx**2
     dy2 = model%dy**2
     dx2_dy2_rho = dx2 * dy2 * rho
-    coef = model%dt / (2. * (dx2 + dy2))
+    coef = model%alpha * model%dt / (2. * (dx2 + dy2))
 
     do i = 2, model%n_y-1
        do j = 2, model%n_x-1
@@ -127,6 +130,7 @@ contains
     write(*,"(a10, i8)") "n_y:", model%n_y
     write(*,"(a10, f8.2)") "dx:", model%dx
     write(*,"(a10, f8.2)") "dy:", model%dy
+    write(*,"(a10, f8.2)") "alpha:", model%alpha
     write(*,"(a10, f8.2)") "dt:", model%dt
     write(*,"(a10, f8.2)") "t:", model%t
     write(*,"(a10, f8.2)") "t_end:", model%t_end
