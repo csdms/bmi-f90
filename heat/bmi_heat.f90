@@ -396,8 +396,7 @@ contains
     case ('plate_surface__temperature')
        call allocate_flattened_array(dest, size(indices))
        do k = 1, size(indices)
-          j = mod((indices(k)-1), int(self%n_y)) + 1
-          i = (indices(k)-1)/int(self%n_y) + 1
+          call convert_indices(k, indices, i, j, self%n_y)
           dest(k) = self%temperature(j,i)
        end do
        status = BMI_SUCCESS
@@ -435,8 +434,7 @@ contains
     select case (var_name)
     case ('plate_surface__temperature')
        do k = 1, size(indices)
-          j = mod((indices(k)-1), int(self%n_y)) + 1
-          i = (indices(k)-1)/int(self%n_y) + 1
+          call convert_indices(k, indices, i, j, self%n_y)
           self%temperature(j,i) = src(k)
        end do
        status = BMI_SUCCESS
@@ -454,5 +452,13 @@ contains
        allocate(array(n))
     end if
   end subroutine allocate_flattened_array
+
+  ! A helper for converting flattened to dimensional indices.
+  subroutine convert_indices(k, indices, i, j, ny)
+    integer :: i, j, k, indices(:), ny
+
+    j = mod((indices(k)-1), ny) + 1
+    i = (indices(k)-1)/ny + 1
+  end subroutine convert_indices
 
 end module bmi_heat
