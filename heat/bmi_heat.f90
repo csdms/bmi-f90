@@ -179,7 +179,7 @@ contains
   ! Get the grid identifier for the given variable.
   function get_var_grid(self, var_name, grid_id) result(status)
     type (heat_model), intent (in) :: self
-    character (len=*), pointer, intent (in) :: var_name
+    character (len=*), intent (in) :: var_name
     integer, intent (out) :: grid_id
     integer :: status
 
@@ -195,7 +195,7 @@ contains
   ! Get memory use per array element, in bytes.
   function get_var_itemsize(self, var_name, size) result(status)
     type (heat_model), intent (in) :: self
-    character (len=*), pointer, intent (in) :: var_name
+    character (len=*), intent (in) :: var_name
     integer, intent (out) :: size
     integer :: status
 
@@ -211,7 +211,7 @@ contains
   ! Get size, in bytes, of the given variable.
   function get_var_nbytes(self, var_name, nsize) result(status)
     type (heat_model), intent (in) :: self
-    character (len=*), pointer, intent (in) :: var_name
+    character (len=*), intent (in) :: var_name
     integer, intent (out) :: nsize
     integer :: s1, s2, s3, grid_id, grid_size, item_size, status
 
@@ -231,7 +231,7 @@ contains
   ! Get the data type of the given variable as a string.
   function get_var_type(self, var_name, type_name) result(status)
     type (heat_model), intent (in) :: self
-    character (len=*), pointer, intent (in) :: var_name
+    character (len=*), intent (in) :: var_name
     character (len=BMI_MAXVARNAMESTR), intent (out) :: type_name
     integer :: status
 
@@ -247,7 +247,7 @@ contains
   ! Get the units of the given variable.
   function get_var_units(self, var_name, units) result(status)
     type (heat_model), intent (in) :: self
-    character (len=*), pointer, intent (in) :: var_name
+    character (len=*), intent (in) :: var_name
     character (len=BMI_MAXVARNAMESTR), intent (out) :: units
     integer :: status
 
@@ -374,7 +374,7 @@ contains
   ! Get a reference to the values (flattened!) of the given variable.
   function get_value_ref(self, var_name, dest) result(status)
     type (heat_model), intent (in) :: self
-    character (len=*), pointer, intent (in) :: var_name
+    character (len=*), intent (in) :: var_name
     real, pointer, intent (inout) :: dest(:)
     integer :: status
 
