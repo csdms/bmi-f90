@@ -25,6 +25,6 @@ install(
   FILES ${PKG_NAME}.pc
   DESTINATION lib/pkgconfig)
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PKG_NAME}.mod
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/bmi_params.mod
   DESTINATION lib)
 
