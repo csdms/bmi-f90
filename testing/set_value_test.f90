@@ -1,83 +1,51 @@
-      program test
-      use bmif
-      implicit none
+! Test the set_value and set_value_at_indices functions.
+program set_value_test
 
-      type (BMI_Model) :: m
-      integer :: rank
-      integer, allocatable, dimension (:) :: shape
-      real, allocatable, dimension (:) :: spacing
-      real, allocatable, dimension (:) :: origin
-      integer :: i, j
-      real :: time
-      character (len=22), pointer :: names(:)
-      character (len=component_name_length), pointer :: name
-      real, pointer, dimension(:) :: z
+  use bmi_heat
+  use testing_helpers
+  implicit none
 
-      write (*,"(A)",advance="no") "Initializing..."
-      call BMI_Initialize (m, "")
-      write (*,*) "Done."
+  type (heat_model) :: m
+  integer :: s, i, j, grid_id
+  character (len=BMI_MAXVARNAMESTR), pointer :: names(:)
+  integer :: dims(2), locations(3)
+  real :: values(3)
+  real, pointer :: z(:)
+  character(len=30) :: rowfmt
 
-      write (*,"(A)") "Component info:"
+  write (*,"(a)",advance="no") "Initializing..."
+  s = initialize(m, "")
+  write (*,*) "Done."
 
-      call BMI_Get_component_name (m, name)
-      write (*,"(a30, a30)") "Component name: ", name
+  s = get_output_var_names(m, names)
+  write (*,"(a, a)") "Output variables: ", names
 
-      call BMI_Get_start_time (m, time)
-      write (*,"(A30, f8.2)") "Start time: ", time
-      call BMI_Get_end_time (m, time)
-      write (*,"(A30, f8.2)") "End time: ", time
-      call BMI_Get_current_time (m, time)
-      write (*,"(A30, f8.2)") "Current time: ", time
+  s = get_var_grid(m, names(1), grid_id)
+  s = get_grid_shape(m, grid_id, dims)
+  write(rowfmt,'(a,i4,a)') '(', dims(2), '(1x,f6.1))'
 
-      call BMI_Get_var_rank (m, "surface_elevation", rank)
-      write (*,"(A30, f8.2)") "Var rank: ", time
+  write (*, "(a)") "Initial values:"
+  s = get_value(m, "plate_surface__temperature", z)
+  call print_array(z, dims)
 
-      allocate (shape (rank))
-      call BMI_Get_grid_shape (m, "surface_elevation", shape)
-      write (*,"(A30, i3, A, i3)") "Grid shape is: ", &
-        shape(1), " x ", shape(2)
+  write (*,"(a)",advance="no") "Setting new values..."
+  z = 42.0
+  s = set_value(m, "plate_surface__temperature", z)
+  write (*,*) "Done."
 
-      write (*,"(A)") "Running..."
-      do j = 1, 10
-        call BMI_Update (m)
-      end do
-      write (*,"(A)") "Done."
+  write (*, "(a)") "New values:"
+  s = get_value(m, "plate_surface__temperature", z)
+  call print_array(z, dims)
 
-      allocate (z (shape(1)*shape(2)))
-      call BMI_Get_double (m, "surface_elevation", z)
-      write (*,*) "Values"
-      write (*,*) "======"
-      do i = 1, shape(2)
-          write (*,*) z(i*shape(1)-shape(1)+1:i*shape(1))
-      end do
+  write (*, "(a)") "Set values at three locations:"
+  locations = (/21, 41, 62/)
+  values = (/-1.0, -1.0, -1.0/)
+  write (*,*) "Locations: ", locations
+  write (*,*) "Values: ", values
+  s = set_value_at_indices(m, "plate_surface__temperature", locations, values)
 
-      z = -1.
-      call BMI_Get_double (m, "surface_elevation", z)
-      write (*,*) "Values"
-      write (*,*) "======"
-      do i = 1, shape(2)
-          write (*,*) z(i*shape(1)-shape(1)+1:i*shape(1))
-      end do
+  write (*, "(a)") "New values:"
+  s = get_value(m, "plate_surface__temperature", z)
+  call print_array(z, dims)
 
-      nullify (z)
-      call BMI_Get_double (m, "surface_elevation", z)
-      write (*,*) "Values"
-      write (*,*) "======"
-      do i = 1, shape(2)
-          write (*,*) z(i*shape(1)-shape(1)+1:i*shape(1))
-      end do
-
-      z = -1.
-      call BMI_Get_double (m, "surface_elevation", z)
-      write (*,*) "Values"
-      write (*,*) "======"
-      do i = 1, shape(2)
-          write (*,*) z(i*shape(1)-shape(1)+1:i*shape(1))
-      end do
-
-      write (*,"(A)", advance="no") "Finalizing..."
-      call BMI_Finalize (m)
-      write (*,*) "Done"
-
-      end program test
-
+end program set_value_test
