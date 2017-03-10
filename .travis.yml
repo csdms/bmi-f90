@@ -1,6 +1,7 @@
 language: generic
 os:
   - linux
+  - osx
 env:
   global:
     - CONDA_PREFIX=$HOME/miniconda
@@ -8,7 +9,12 @@ env:
     - TRAVIS_PYTHON_VERSION="2.7"
 sudo: false
 before_install:
-  - OS="Linux-x86_64"
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      OS="MacOSX-x86_64"
+    else
+      OS="Linux-x86_64"
+    fi
   - curl $MINICONDA_URL_BASE-$OS.sh > $HOME/minconda.sh
   - bash $HOME/minconda.sh -b -p $CONDA_PREFIX
   - export PATH="$CONDA_PREFIX/bin:$PATH"
