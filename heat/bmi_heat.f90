@@ -17,8 +17,6 @@ module bmi_heat
        dimension (output_item_count) :: &
        output_items = (/'plate_surface__temperature'/)
 
-  private allocate_flattened_array, convert_indices
-
 contains
 
   ! Perform startup tasks for the model.
@@ -360,12 +358,12 @@ contains
     select case (var_name)
     case ('plate_surface__temperature')
        n_elements = self%n_y * self%n_x
-       call allocate_flattened_array(dest, n_elements)
+       allocate(dest(n_elements))
        dest = reshape(self%temperature, (/n_elements/))
        status = BMI_SUCCESS
     case default
        n_elements = 1
-       call allocate_flattened_array(dest, n_elements)
+       allocate(dest(n_elements))
        dest = -1.0
        status = BMI_FAILURE
     end select
@@ -394,14 +392,14 @@ contains
 
     select case (var_name)
     case ('plate_surface__temperature')
-       call allocate_flattened_array(dest, size(indices))
+       allocate(dest(size(indices)))
        do k = 1, size(indices)
           call convert_indices(k, indices, i, j, self%n_y)
           dest(k) = self%temperature(j,i)
        end do
        status = BMI_SUCCESS
     case default
-       call allocate_flattened_array(dest, 1)
+       allocate(dest(1))
        dest = -1.0
        status = BMI_FAILURE
     end select
@@ -442,16 +440,6 @@ contains
        status = BMI_FAILURE
     end select
   end function set_value_at_indices
-
-  ! A helper routine to allocate a flattened array.
-  subroutine allocate_flattened_array(array, n)
-    real, pointer, intent (inout) :: array(:)
-    integer, intent (in) :: n
-
-    if (.not.associated(array)) then
-       allocate(array(n))
-    end if
-  end subroutine allocate_flattened_array
 
   ! A helper for converting flattened to dimensional indices.
   subroutine convert_indices(k, indices, i, j, ny)
