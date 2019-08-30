@@ -1,18 +1,20 @@
 #
 # heat and bmi_heat
 #
-add_library(heatf SHARED heat.f90)
-add_library(bmiheatf SHARED bmi_heat.f90 heat.f90)
+set(model_name heatf90)
 
-add_executable(run_heatf main.f90)
-target_link_libraries(run_heatf heatf)
+add_library(${model_name} SHARED heat.f90)
+add_library(bmi${model_name} SHARED bmi_heat.f90 heat.f90)
+
+add_executable(run_${model_name} main.f90)
+target_link_libraries(run_${model_name} ${model_name})
 
 install(
-  TARGETS run_heatf
+  TARGETS run_${model_name}
   RUNTIME DESTINATION bin
 )
 install(
-  TARGETS heatf bmiheatf
+  TARGETS ${model_name} bmi${model_name}
   LIBRARY DESTINATION lib
 )
 install(
