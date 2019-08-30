@@ -5,9 +5,6 @@ enable_language (Fortran)
 set (BMI_VERSION 0.2)
 set (PKG_NAME bmif90)
 
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/${PKG_NAME}.pc.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/${PKG_NAME}.pc)
-
 set (BUILD_SHARED_LIBS ON)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -21,9 +18,6 @@ install(
   TARGETS ${PKG_NAME}
   DESTINATION lib
   COMPONENT bmi)
-install(
-  FILES ${PKG_NAME}.pc
-  DESTINATION lib/pkgconfig)
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/bmi_params.mod
   DESTINATION lib)

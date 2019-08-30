@@ -5,10 +5,6 @@ enable_language (Fortran)
 set (HEAT_VERSION 0.1)
 set (PKG_NAME heatf90)
 
-configure_file (
-  ${CMAKE_CURRENT_SOURCE_DIR}/${PKG_NAME}.pc.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/${PKG_NAME}.pc)
-
 set (BUILD_SHARED_LIBS ON)
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR})
@@ -28,9 +24,6 @@ install (
   TARGETS bmi_${PKG_NAME}
   DESTINATION lib
   COMPONENT ${PKG_NAME})
-install (
-  FILES ${PKG_NAME}.pc
-  DESTINATION lib/pkgconfig)
 install (
   FILES ${CMAKE_CURRENT_BINARY_DIR}/heat.mod
   DESTINATION lib)
