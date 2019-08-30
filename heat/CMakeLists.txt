@@ -1,8 +1,6 @@
 #
 # heat and bmi_heat
 #
-set(model_name heatf90)
-
 add_library(${model_name} SHARED heat.f90)
 add_library(bmi${model_name} SHARED bmi_heat.f90 heat.f90)
 
