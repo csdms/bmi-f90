@@ -28,7 +28,7 @@ install:
   - make
   - |
     if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      - source ../.ci/travis/update_rpaths.sh
+      - source ../scripts/update_rpaths.sh
     fi
   - make install
 script:
