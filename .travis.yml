@@ -26,10 +26,6 @@ install:
   - mkdir _build && cd _build
   - cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
   - make
-  - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      - source ../.ci/travis/update_rpaths.sh
-    fi
   - make install
 script:
   - ctest

@@ -1,6 +1,0 @@
-name: heat-f90
-language: fortran
-cflags:
-  pkgconfig: heatf90
-libs:
-  pkgconfig: heatf90

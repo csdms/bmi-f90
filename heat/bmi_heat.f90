@@ -1,8 +1,23 @@
 module bmi_heat
 
-  use bmi_params
   use heat
   implicit none
+
+  integer, parameter :: BMI_MAXVARNAMESTR = 2048
+  integer, parameter :: BMI_MAXCOMPNAMESTR = 2048
+  integer, parameter :: BMI_MAXUNITSSTR = 2048
+
+  integer, parameter :: BMI_CHAR = 1
+  integer, parameter :: BMI_UNSIGNED_CHAR = 1
+  integer, parameter :: BMI_INT = 2
+  integer, parameter :: BMI_LONG = 4
+  integer, parameter :: BMI_UNSIGNED_INT = 2
+  integer, parameter :: BMI_UNSIGNED_LONG = 4
+  integer, parameter :: BMI_FLOAT = 4
+  integer, parameter :: BMI_DOUBLE = 8
+
+  integer, parameter :: BMI_FAILURE = 0
+  integer, parameter :: BMI_SUCCESS = 1
 
   character (len=BMI_MAXCOMPNAMESTR), target :: &
        component_name = "The 2D Heat Equation"

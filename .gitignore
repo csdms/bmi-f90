@@ -32,3 +32,7 @@
 
 # Emacs backups
 *~
+
+# MP - typical test build and install locations
+_build
+_install

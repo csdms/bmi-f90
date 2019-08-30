@@ -1,36 +1,26 @@
-cmake_minimum_required (VERSION 2.6)
+#
+# heat and bmi_heat
+#
+add_library(${model_name} SHARED heat.f90)
+add_library(bmi${model_name} SHARED bmi_heat.f90 heat.f90)
 
-project (heat)
-enable_language (Fortran)
-set (HEAT_VERSION 0.1)
-set (PKG_NAME heatf90)
+add_executable(run_${model_name} main.f90)
+target_link_libraries(run_${model_name} ${model_name})
 
-configure_file (
-  ${CMAKE_CURRENT_SOURCE_DIR}/${PKG_NAME}.pc.cmake
-  ${CMAKE_CURRENT_SOURCE_DIR}/${PKG_NAME}.pc)
+add_executable(run_bmi${model_name} bmi_main.f90)
+target_link_libraries(run_bmi${model_name} bmi${model_name} ${model_name})
 
-set (BUILD_SHARED_LIBS ON)
-
-include_directories (${CMAKE_CURRENT_SOURCE_DIR})
-include_directories (${CMAKE_BINARY_DIR}/bmi)
-
-set (bmi_heat_lib_sources bmi_heat.f90 heat.f90)
-add_library (bmi_${PKG_NAME} ${bmi_heat_lib_sources})
-
-set (heat_sources main.f90 heat.f90)
-add_executable (run_${PKG_NAME} ${heat_sources})
-
-install (
-  PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/run_${PKG_NAME}
-  DESTINATION bin
-  COMPONENT ${PKG_NAME})
-install (
-  TARGETS bmi_${PKG_NAME}
-  DESTINATION lib
-  COMPONENT ${PKG_NAME})
-install (
-  FILES ${PKG_NAME}.pc
-  DESTINATION lib/pkgconfig)
-install (
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/heat.mod
-  DESTINATION lib)
+install(
+  TARGETS run_${model_name} run_bmi${model_name}
+  RUNTIME DESTINATION bin
+)
+install(
+  TARGETS ${model_name} bmi${model_name}
+  LIBRARY DESTINATION lib
+)
+install(
+  FILES
+    ${CMAKE_BINARY_DIR}/heat/heat.mod
+    ${CMAKE_BINARY_DIR}/heat/bmi_heat.mod
+  DESTINATION include
+)

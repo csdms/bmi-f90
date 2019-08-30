@@ -2,11 +2,12 @@
 
 # bmi-f90
 
-Fortran 90 bindings for the Basic Model Interface.
+Fortran 90 bindings for the CSDMS
+[Basic Model Interface](https://bmi-spec.readthedocs.io) (BMI).
 
 ## Build
 
-To build the BMI Fortran bindings and tests, execute
+To build the bindings and tests on Linux and macOS, run
 
     $ mkdir _build && cd _build
     $ cmake .. -DCMAKE_INSTALL_PREFIX=<path-to-installation>
@@ -26,6 +27,19 @@ To install:
 Run some simple tests with
 
     $ make test
+
+## Use
+
+Run the heat model through its BMI with the `run_bmiheatf90` program,
+which takes a model configuration file
+(see the [testing](./testing) directory for a sample)
+as a required parameter.
+If `run_bmiheatf90` is in your path, run it with
+
+    run_bmiheatf90 test.cfg
+
+Output from the model is written to the file **bmiheatf90.out**
+in the current directory.
 
 ## Note
 
