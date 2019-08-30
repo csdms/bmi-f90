@@ -1,10 +1,12 @@
-cmake_minimum_required(VERSION 2.6)
+#
+# bmif90
+#
+cmake_minimum_required(VERSION 2.8)
 
-project (bmi)
+project(bmif90 Fortran)
 
-add_subdirectory (bmi)
-add_subdirectory (heat)
-add_subdirectory (testing)
+add_subdirectory(heat)
+# add_subdirectory(testing)
 
-include (CTest)
+include(CTest)
 
