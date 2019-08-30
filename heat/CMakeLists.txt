@@ -7,8 +7,11 @@ add_library(bmi${model_name} SHARED bmi_heat.f90 heat.f90)
 add_executable(run_${model_name} main.f90)
 target_link_libraries(run_${model_name} ${model_name})
 
+add_executable(run_bmi${model_name} bmi_main.f90)
+target_link_libraries(run_bmi${model_name} bmi${model_name} ${model_name})
+
 install(
-  TARGETS run_${model_name}
+  TARGETS run_${model_name} run_bmi${model_name}
   RUNTIME DESTINATION bin
 )
 install(

@@ -25,3 +25,4 @@ for exe in $tests; do
 done
 
 run_install_name_tool ./heat/run_heatf90
+run_install_name_tool ./heat/run_bmiheatf90
