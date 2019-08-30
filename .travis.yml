@@ -21,7 +21,7 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda config --add channels conda-forge
   - conda install python=$TRAVIS_PYTHON_VERSION cmake fortran-compiler
-  - conda activate root
+  - source activate root
 install:
   - mkdir _build && cd _build
   - cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX
